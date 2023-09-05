@@ -147,21 +147,14 @@ async def upload_to_gdrive(file_upload, message, messa_ge, g_id):
     del_it = await message.edit_text(
         f"<a href='tg://user?id={g_id}'>🔊</a> Now Uploading to ☁️ Cloud!!!"
     )
-    
-    # Check if the rclone.conf file exists
     if not os.path.exists("rclone.conf"):
-        await message.reply_text("The rclone.conf file is missing.")
-        return
-    
-    # Read the rclone.conf file
-    with open("rclone.conf", "r+") as file:
-        con = file.read()
-        # Use a try-except block to handle the IndexError
-        try:
+        with open("rclone.conf", "w+", newline="\n", encoding="utf-8") as fole:
+            fole.write(f"{RCLONE_CONFIG}")
+    if os.path.exists("rclone.conf"):
+        with open("rclone.conf", "r+") as file:
+            con = file.read()
             gUP = re.findall("\[(.*)\]", con)[0]
-        except IndexError:
-            await message.reply_text("Failed to extract the remote drive name from rclone.conf.")
-            return
+            LOGGER.info(gUP)
     destination = f"{DESTINATION_FOLDER}"
     file_upload = str(Path(file_upload).resolve())
     LOGGER.info(file_upload)
